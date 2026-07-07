@@ -1,0 +1,18 @@
+# Python 虚拟环境(几百MB、机器专属,不上传)
+.venv/
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# Jupyter 临时检查点
+.ipynb_checkpoints/
+
+# Claude Code 本地文件
+.claude/
+
+# 旧的脚本输出转储
+out.txt
+
+# 中文学习版脚本(仅本地保留,不上传)
+fetch_and_explore_zh.py
