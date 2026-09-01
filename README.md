@@ -1,9 +1,13 @@
 # WTI Crude Oil Prices & Global Events (1970–2026)
 
-An exploratory data analysis of ~80 years of WTI crude oil prices, framed against the
-geopolitical and financial events that moved them. Built as a portfolio project to
-demonstrate the full analytics workflow: data ingestion, cleaning, transformation,
-inflation adjustment, event studies, and correlation analysis — all in Python/pandas.
+An exploratory data analysis of WTI crude oil prices from 1970 to 2026, framed against the
+geopolitical and financial events that moved them. The underlying FRED series reaches back
+to 1946; charts start in 1970 to drop the flat price-controlled era while keeping the
+1973 and 1979 oil shocks, and quantitative comparisons focus on 1986 onward, after prices
+ were deregulated and became comparable.
+
+The full workflow is here: data ingestion, cleaning, transformation, inflation adjustment,
+event studies, correlation analysis, and forecasting — all in Python/pandas.
 
 ---
 
