@@ -1,5 +1,6 @@
 """WTI crude oil price analysis: events, inflation, dollar/gold correlation, and forecasting."""
 import logging
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,6 +19,18 @@ plt.rcParams["axes.titlesize"] = 14
 plt.rcParams["axes.titleweight"] = "bold"
 plt.rcParams["axes.labelsize"] = 11
 plt.rcParams["legend.fontsize"] = 9
+
+# Every figure is written to figures/ so the results are readable in the repo
+# without installing the dependencies and running this script.
+FIGURES = Path(__file__).parent / "figures"
+FIGURES.mkdir(exist_ok=True)
+
+
+def save(name):
+    """Write the current figure to figures/<name>.png."""
+    plt.tight_layout()
+    plt.savefig(FIGURES / f"{name}.png", dpi=150)
+
 
 # ===== WTI monthly oil price (FRED: WTISPLC) =====
 oil = pd.read_csv("oil_price.csv")
@@ -132,7 +145,7 @@ ax.annotate("Iraq invades Kuwait", xy=(event_date, window["indexed"].min()),
 ax.set_title("Event Study: Gulf War 1990 (event month = 100)")
 ax.set_xlabel("Date")
 ax.set_ylabel("Price (event month = 100)")
-plt.tight_layout()
+save("event-study-gulf-war-1990")
 
 # ===== Event study: five crises overlaid on a common axis =====
 study_events = {
@@ -157,6 +170,7 @@ plt.title("Event Study Comparison (event month = 100)")
 plt.xlabel("Months from event")
 plt.ylabel("Price (event month = 100)")
 plt.legend(title="Event")
+save("event-study-comparison")
 
 # ===== Nominal vs real price =====
 fig, ax = plt.subplots()
@@ -175,6 +189,7 @@ ax.set_title("WTI Oil: Nominal vs Real Price")
 ax.set_xlabel("Year")
 ax.set_ylabel("Price (USD per barrel)")
 ax.legend()
+save("nominal-vs-real-price")
 
 # ===== Oil vs Dollar Index (dual-axis, 2006+) =====
 d = oil.loc["2006":]
@@ -194,6 +209,7 @@ lines = ax1.get_lines() + ax2.get_lines()
 labels = [ln.get_label() for ln in lines]
 ax1.legend(lines, labels, loc="lower right")
 ax1.set_title(f"Oil vs US Dollar Index (2006-2026, r={corr:.2f})")
+save("oil-vs-dollar-index")
 
 # ===== Rolling correlation over time =====
 fig, ax = plt.subplots()
@@ -208,6 +224,7 @@ ax.set_ylim(-1, 1)
 ax.set_title("Rolling 36-Month Correlation: Oil vs Dollar (% change)")
 ax.set_xlabel("Year")
 ax.set_ylabel("Correlation")
+save("rolling-correlation-oil-dollar")
 
 # ===== Regression scatter: one point per month + fit line =====
 fig, ax = plt.subplots()
@@ -221,6 +238,7 @@ ax.set_title(f"Oil vs Dollar Monthly Returns (R² = {r2:.2f})")
 ax.set_xlabel("Dollar index monthly % change")
 ax.set_ylabel("Oil price monthly % change")
 ax.legend()
+save("regression-oil-vs-dollar-returns")
 
 # ===== Oil vs Gold (dual-axis, 2000+) =====
 g = oil.loc["2000":]
@@ -239,6 +257,7 @@ lines = ax1.get_lines() + ax2.get_lines()
 ax1.legend(lines, [ln.get_label() for ln in lines], loc="upper left")
 # Title makes the point: level correlation looks real, returns correlation is ~0 (spurious)
 ax1.set_title(f"Oil vs Gold (level r={corr_gold:.2f}, but return r={corr_gold_pct:.2f})")
+save("oil-vs-gold")
 
 # ===== Main chart: full price panorama with event annotations =====
 fig, ax = plt.subplots()
@@ -255,7 +274,7 @@ for _, row in events.iterrows():
             rotation=90, fontsize=9, color="#333333",
             ha="center", va="bottom",
             bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.6))
-plt.tight_layout()
+save("price-history-with-events")
 
 # ===== ARIMA 12-month forecast (1986+ monthly prices) =====
 oil_ts = oil.loc["1986":, "price"].asfreq("MS")
@@ -302,6 +321,6 @@ else:
 ax.set_xlabel("Year")
 ax.set_ylabel("Price (USD per barrel)")
 ax.legend(loc="upper left")
-plt.tight_layout()
+save("arima-forecast")
 
 plt.show()

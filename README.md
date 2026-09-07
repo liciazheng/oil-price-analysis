@@ -103,10 +103,28 @@ everything on the date index.
 | 2020-04 | −43.3% | COVID-19 crash |
 | 2008-12 | −28.6% | Global Financial Crisis |
 
+![WTI crude oil price with major events, 1970–2026](figures/price-history-with-events.png)
+
+### Event studies: supply shocks spike and reverse, demand shocks just fall
+Indexing each crisis to 100 at its event month puts all five on a common axis, and the shapes
+separate into two families. The geopolitical supply shocks give most of the move back: the 1990
+Gulf War peaked at **+32%** two months in and was already **below its starting level** by month
+six, and Ukraine 2022 peaked at +25% and retraced to about +2%. The 2008 demand shock does the
+opposite — it falls monotonically to roughly **−70%** and never turns. COVID-19 is a third shape
+again, a **−44%** collapse in one month followed by a rebound past where it started.
+
+*(US-Iran 2026 has only two months of data after the event, so its line stops early.)*
+
+![Event study: Gulf War 1990](figures/event-study-gulf-war-1990.png)
+
+![Event study comparison across five crises](figures/event-study-comparison.png)
+
 ### The most expensive oil in history was 2008 — not the 1970s
 Adjusted for inflation, **June 2008 peaked at ~$206 (2026 dollars)** — the highest real
 price on record. In fact, the **entire top 5 real prices all fall in 2008**. Nominal prices
 badly mislead across decades: only real (inflation-adjusted) prices are a fair yardstick.
+
+![WTI oil: nominal vs real price](figures/nominal-vs-real-price.png)
 
 ### Oil and the dollar move inversely — but the link is moderate
 | Method | Correlation |
@@ -119,6 +137,8 @@ oil more expensive abroad, dampening demand). The relationship weakens when meas
 returns, showing that part of the level correlation is a spurious artifact of two trending
 series — and that supply and geopolitical shocks, not the dollar, remain the dominant drivers.
 
+![Oil price against the broad US dollar index, 2006–2026](figures/oil-vs-dollar-index.png)
+
 ### The oil–dollar relationship is not stable — it recently flipped positive
 A 36-month rolling correlation shows the link is regime-dependent, not fixed. It sat firmly
 negative (around −0.5 to −0.75) through most of 2009–2022, but **turned positive in 2023–24
@@ -126,6 +146,8 @@ for the first time** — a genuine regime shift. The 2022 combination of aggress
 hikes and the Ukraine war pushed oil *and* the dollar up together, breaking the textbook
 inverse pattern. Takeaway: a single headline correlation hides large, economically meaningful
 swings — the rolling view is what tells the real story.
+
+![36-month rolling correlation between oil and the dollar](figures/rolling-correlation-oil-dollar.png)
 
 ### Regression: a strong *direction*, but weak *explanatory power*
 Regressing oil monthly returns on dollar monthly returns gives:
@@ -136,6 +158,8 @@ A 1% rise in the dollar is associated with a ~**3.2% drop** in oil — a steep, 
 move. Yet the dollar explains only **15% of oil's monthly variance**; the other 85% comes from
 supply, geopolitics, and demand. The honest takeaway: the dollar is a real driver of *direction*
 but a minor one for *magnitude* — exactly what the moderate correlation already hinted.
+
+![Regression of oil monthly returns on dollar monthly returns](figures/regression-oil-vs-dollar-returns.png)
 
 ### Gold vs oil: a textbook case of spurious correlation
 On price *levels*, oil and gold look moderately linked (**r = +0.39**). But on monthly *returns*
@@ -149,6 +173,8 @@ fabricate a relationship that isn't there.
 daily→monthly aggregation avoids the ~15% of missing months in Yahoo's monthly feed without
 inventing any values through interpolation.)*
 
+![Oil against gold, 2000–2026](figures/oil-vs-gold.png)
+
 ### Forecasting: the honest answer is "≈ where it is now, with wide error bars"
 An `ARIMA(1,1,1)` model forecasts the next 12 months as an almost **flat line near ~$103** —
 because oil prices behave close to a **random walk**, where the best guess for next month is
@@ -156,6 +182,8 @@ roughly this month. The point forecast is therefore not the takeaway; the **95% 
 interval, which fans out steadily the further ahead we look**, is. The honest conclusion:
 short-horizon oil prices are effectively unpredictable in level, and a credible model
 communicates *uncertainty* rather than a false-precision number.
+
+![ARIMA(1,1,1) 12-month WTI forecast with 95% confidence interval](figures/arima-forecast.png)
 
 ---
 
@@ -182,9 +210,10 @@ python -m venv .venv
 .\.venv\Scripts\python.exe fetch_and_explore.py
 ```
 
-Produces nine figures: the annotated price panorama, single and multi-event studies,
-nominal-vs-real prices, the oil-vs-dollar overlay, rolling correlation, the regression scatter,
-the oil-vs-gold overlay, and the ARIMA forecast.
+Writes nine figures into [`figures/`](figures): the annotated price panorama, single and
+multi-event studies, nominal-vs-real prices, the oil-vs-dollar overlay, rolling correlation,
+the regression scatter, the oil-vs-gold overlay, and the ARIMA forecast. They are committed to
+the repository, so every chart above is visible without installing anything.
 
 ### Notebook
 
