@@ -8,9 +8,6 @@ __pycache__/
 # Jupyter 临时检查点
 .ipynb_checkpoints/
 
-# Claude Code 本地文件
-.claude/
-
 # 旧的脚本输出转储
 out.txt
 
