@@ -1,0 +1,60 @@
+name: pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The committed figures are deleted first, so the check below proves the
+      # script regenerated them rather than finding the versions already in git.
+      - name: Clear the committed figures
+        run: rm -rf figures
+
+      # Every data file is committed, so the analysis needs no network access.
+      # Agg keeps matplotlib headless and turns the script's plt.show() into a
+      # no-op. Prophet's Stan backend fails on the author's Windows machine but
+      # runs here, so this step also exercises the branch skipped locally.
+      - name: Run the analysis end to end
+        env:
+          MPLBACKEND: Agg
+        run: python fetch_and_explore.py
+
+      # Only existence is checked. matplotlib PNGs are not byte-reproducible
+      # across versions and platforms, so diffing figures/ against the committed
+      # copies would fail for reasons that have nothing to do with the data.
+      - name: Check every figure was produced
+        run: |
+          missing=0
+          for name in arima-forecast \
+                      event-study-comparison \
+                      event-study-gulf-war-1990 \
+                      nominal-vs-real-price \
+                      oil-vs-dollar-index \
+                      oil-vs-gold \
+                      price-history-with-events \
+                      regression-oil-vs-dollar-returns \
+                      rolling-correlation-oil-dollar; do
+            if [ ! -s "figures/$name.png" ]; then
+              echo "::error::figures/$name.png was not produced"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 0 ]; then
+            echo "All nine figures were regenerated from the committed data."
+          fi
+          exit $missing
